@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
@@ -28,6 +29,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     Button buttonAddCity;
     ListView lvMain;
+    ProgressBar progressBar;
 
     ArrayAdapter<String> adapter;
     EditText mEdit;
@@ -41,6 +43,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
 
         lvMain = (ListView) findViewById(R.id.lvCity);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         buttonAddCity = (Button) findViewById(R.id.addCityBut);
 
@@ -61,12 +65,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Parametres.isInternet = isOnline();
                 String checkedCity = adapter.getItem(position);
 
-                new MainBackGround(MainActivity.this).execute();
+                new MainBackGround(MainActivity.this, progressBar).execute();
 
                 Log.i("Checked city", checkedCity);
 
-                Intent intent = new Intent(MainActivity.this, WeatherMain.class);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, WeatherMain.class);
+                //startActivity(intent);
             }
         });
     }

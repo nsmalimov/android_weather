@@ -10,99 +10,116 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DBHelper extends SQLiteOpenHelper {
+public class DBHelper {
 
-    public static final String DATABASE_NAME = "MyDBName.db";
+    public String tableName = "";
+    public boolean needCreate = false;
 
-    public static final String CONTACTS_TABLE_NAME = "contacts";
-    public static final String CONTACTS_COLUMN_ID = "id";
-    public static final String CONTACTS_COLUMN_NAME = "name";
-    public static final String CONTACTS_COLUMN_EMAIL = "email";
-    public static final String CONTACTS_COLUMN_STREET = "street";
-    public static final String CONTACTS_COLUMN_CITY = "place";
-    public static final String CONTACTS_COLUMN_PHONE = "phone";
-    private HashMap hp;
+    public class SingleDB extends SQLiteOpenHelper {
 
-    public DBHelper(Context context)
-    {
-        super(context, DATABASE_NAME , null, 1);
-    }
+        public static final String DATABASE_NAME = "WeatherDB.db";
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
-        db.execSQL(
-                "create table contacts " +
-                        "(id integer primary key, name text,phone text,email text, street text,place text)"
-        );
-    }
+        public String weatherTableName = tableName;
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
-        db.execSQL("DROP TABLE IF EXISTS contacts");
-        onCreate(db);
-    }
+        public static final String WEATHER_COLUMN_ID = "id";
+        public static final String WEATHER_CTIY_NAME = "city";
+        public static final String WEATHER_COLUMN_TEMP = "temp";
+        public static final String WEATHER_COLUMN_PRESSURE = "pressure";
+        public static final String WEATHER_COLUMN_HUMIDITY = "humidity";
+        public static final String WEATHER_COLUMN_CLOUDS = "clouds";
+        public static final String WEATHER_COLUMN_WIND = "wind";
+        private HashMap hp;
 
-    public boolean insertContact  (String name, String phone, String email, String street,String place)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
-        db.insert("contacts", null, contentValues);
-        return true;
-    }
-
-    public Cursor getData(int id){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from contacts where id="+id+"", null );
-        return res;
-    }
-
-    public int numberOfRows(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, CONTACTS_TABLE_NAME);
-        return numRows;
-    }
-
-    public boolean updateContact (Integer id, String name, String phone, String email, String street,String place)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
-        db.update("contacts", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
-        return true;
-    }
-
-    public Integer deleteContact (Integer id)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("contacts",
-                "id = ? ",
-                new String[] { Integer.toString(id) });
-    }
-
-    public ArrayList<String> getAllCotacts()
-    {
-        ArrayList<String> array_list = new ArrayList<String>();
-
-        //hp = new HashMap();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from contacts", null );
-        res.moveToFirst();
-
-        while(res.isAfterLast() == false){
-            array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)));
-            res.moveToNext();
+        public SingleDB(Context context) {
+            super(context, DATABASE_NAME, null, 1);
         }
-        return array_list;
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            // TODO Auto-generated method stub
+            if (needCreate) {
+                db.execSQL(
+                        "create table " + weatherTableName + " " +
+                                "(id integer primary key, city text,temp text,pressure text, humidity text," +
+                                "clouds text,wind text)"
+                );
+            }
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        }
+
+        public void deleteTable(String tableName) {
+            SQLiteDatabase db = this.getReadableDatabase();
+            db.execSQL("DROP TABLE IF EXISTS " + tableName);
+        }
+
+        public boolean insertContact(String city, String temp, String pressure,
+                                     String humidity, String clouds, String wind) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("city", city);
+            contentValues.put("temp", temp);
+            contentValues.put("pressure", pressure);
+            contentValues.put("humidity", humidity);
+            contentValues.put("clouds", clouds);
+            contentValues.put("wind", wind);
+            db.insert(weatherTableName, null, contentValues);
+            return true;
+        }
+
+        public String getTemp(String cityName) {
+            SQLiteDatabase db = this.getReadableDatabase();
+            String selectQuery = "SELECT temp FROM " + weatherTableName + " WHERE city=" + cityName;
+            Cursor c = db.rawQuery(selectQuery, null);
+            String temp = "No";
+            if (c.moveToFirst()) {
+                temp = c.getString(c.getColumnIndex("temp"));
+            }
+            c.close();
+            return temp;
+        }
+
+        public HashMap<String, String> getAllData(String cityName) {
+            HashMap<String, String> dataMap = new HashMap<String, String>();
+
+            SQLiteDatabase db = this.getReadableDatabase();
+            String selectQuery = "SELECT * FROM " + weatherTableName + " WHERE city=" + cityName;
+            Cursor res = db.rawQuery(selectQuery, null);
+            res.moveToFirst();
+
+            while (!res.isAfterLast()) {
+                dataMap.put("city", res.getString(res.getColumnIndex("city")));
+                dataMap.put("temp", res.getString(res.getColumnIndex("temp")));
+                dataMap.put("pressure", res.getString(res.getColumnIndex("pressure")));
+                dataMap.put("humidity", res.getString(res.getColumnIndex("humidity")));
+                dataMap.put("clouds", res.getString(res.getColumnIndex("clouds")));
+                dataMap.put("wind", res.getString(res.getColumnIndex("wind")));
+                ;
+                res.moveToNext();
+            }
+            return dataMap;
+        }
+
+        public ArrayList<String> getAllTables() {
+            ArrayList<String> arrTblNames = new ArrayList<String>();
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+            if (c.moveToFirst()) {
+                while (!c.isAfterLast()) {
+                    String tableName = c.getString(c.getColumnIndex("name"));
+                    String[] tableNameSplit = tableName.split("-");
+
+                    if (tableNameSplit.length == 3) {
+                        arrTblNames.add(tableName);
+                    }
+                    c.moveToNext();
+                }
+            }
+
+            return arrTblNames;
+        }
     }
 }

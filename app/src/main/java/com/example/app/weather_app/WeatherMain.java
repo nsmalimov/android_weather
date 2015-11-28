@@ -24,7 +24,8 @@ public class WeatherMain extends Activity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_weather);
     }
 
     @Override

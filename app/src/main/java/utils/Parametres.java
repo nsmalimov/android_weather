@@ -1,8 +1,10 @@
 package utils;
 
-/**
- * Created by Nurislam on 27.11.15.
- */
+import java.util.ArrayList;
+
 public class Parametres {
-    public static String cityName = "";
+    public static ArrayList<String> cities = new ArrayList<String>();
+    public static boolean isInternet = false;
+
+    public static int howMuchDaysNeed = 5;
 }

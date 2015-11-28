@@ -1,9 +1,11 @@
 package com.example.app.weather_app;
 
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,21 +18,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import utils.Parametres;
+import MainWorkers.MainBackGround;
 
 public class MainActivity extends Activity implements View.OnClickListener {
+
+    final String SAVED_TEXT = "";
 
     Button buttonAddCity;
     ListView lvMain;
 
-    ArrayList<String> listItems;
     ArrayAdapter<String> adapter;
     EditText mEdit;
 
-    String[] cities = {"Санкт-Петербург", "Москва"};
+    SharedPreferences sPref;
 
 
     @Override
@@ -44,28 +46,29 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         buttonAddCity.setOnClickListener(this);
 
-        listItems = new ArrayList<String>(Arrays.asList(cities));
+        Parametres.cities = loadCitiesApp();
         mEdit = (EditText)findViewById(R.id.cityEditText);
 
-        // создаем адаптер
         adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, listItems);
+                android.R.layout.simple_list_item_1, Parametres.cities);
 
-        // присваиваем адаптер списку
         lvMain.setAdapter(adapter);
 
         lvMain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Parametres.isInternet = isOnline();
                 String checkedCity = adapter.getItem(position);
-                Parametres.cityName = checkedCity;
+
+                new MainBackGround(MainActivity.this).execute();
+
                 Log.i("Checked city", checkedCity);
 
                 Intent intent = new Intent(MainActivity.this, WeatherMain.class);
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -77,8 +80,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        listItems.add(mEdit.getText().toString());
+        Parametres.cities.add(mEdit.getText().toString());
         adapter.notifyDataSetChanged();
+
+        saveCitiesApp(Parametres.cities);
+
         mEdit.setText("");
     }
 
@@ -94,6 +100,52 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    public ArrayList<String> loadCitiesApp()
+    {
+        ArrayList<String> citiesArray = new ArrayList<String>();
 
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString(SAVED_TEXT, "");
+
+        if (!savedText.equals("")) {
+            String[] cities = savedText.split(",");
+
+            for (String s : cities) {
+                citiesArray.add(s);
+            }
+        }
+
+        if (!citiesArray.contains("Санкт-Петербург"))
+            citiesArray.add("Санкт-Петербург");
+        if (!citiesArray.contains("Москва"))
+            citiesArray.add("Москва");
+
+        return citiesArray;
+    }
+
+    public void saveCitiesApp(ArrayList<String> cities)
+    {
+        StringBuilder toSaveString = new StringBuilder();
+
+        for (String e: cities)
+        {
+            toSaveString.append(e);
+            toSaveString.append(",");
+        }
+
+        toSaveString.deleteCharAt(toSaveString.length() - 1);
+
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(SAVED_TEXT, toSaveString.toString());
+        ed.apply();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
 }

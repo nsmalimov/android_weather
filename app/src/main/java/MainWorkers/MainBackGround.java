@@ -51,8 +51,6 @@ public class MainBackGround extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
 
-        //start new activity
-        //context.startActivity(new Intent(context, WeatherMain.class));
         Intent intent = new Intent(context, WeatherMain.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         progressBar.setVisibility(View.INVISIBLE);

@@ -31,7 +31,7 @@ public class SqLiteWork {
 
     public static void updateData()
     {
-
+        ArrayList<String> cities = new ArrayList<String>();
     }
 
     public static void deleteOldTables(DBHelper.SingleDB mydb, String todayDate, ArrayList<String> allTables)

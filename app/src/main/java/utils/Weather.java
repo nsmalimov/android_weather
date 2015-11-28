@@ -1,19 +1,16 @@
 package utils;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Weather {
-    String temp; //температура
-    String pressure; //давление
-    String humidity; //влажность
-    String clouds; //облачность
-    String wind; //ветер (скорость)
 
-    public void setParametres()
-    {
-        temp = "1";
-        pressure = "1";
-        humidity = "1";
-        clouds = "1";
-        wind = "1";
-    }
+    public String temp; //температура
 
+    public String pressure; //давление
+
+    public String humidity; //влажность
+
+    public String clouds; //облачность
+
+    public String wind; //ветер (скорость)
 }

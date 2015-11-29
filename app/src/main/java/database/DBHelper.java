@@ -13,21 +13,20 @@ import android.util.Log;
 
 public class DBHelper {
 
-    public String tableName = "";
+    public ArrayList<String> tableNameArray;
     public boolean needCreate = false;
+
+    public DBHelper(ArrayList<String> tableNameArray)
+    {
+        this.tableNameArray = tableNameArray;
+    }
 
     public class SingleDB extends SQLiteOpenHelper {
 
         public static final String DATABASE_NAME = "WeatherDB.db";
 
-        public String weatherTableName = tableName;
-
         public SingleDB(Context context) {
-            super(context, DATABASE_NAME, null, 2);
-
-
-
-            //super(context, DATABASE_NAME, null, 2);
+            super(context, DATABASE_NAME, null, 1);
         }
 
         @Override
@@ -35,28 +34,23 @@ public class DBHelper {
             // TODO Auto-generated method stub
             //if (needCreate) {
 
-                db.execSQL(
-                        "create table " + weatherTableName + " " +
-                                "(id integer primary key, city text,temp text,pressure text, humidity text," +
-                                "clouds text,wind text)"
-                );
-            //Log.i("Table", weatherTableName);
-            //}
+                for (String s: tableNameArray) {
+                    db.execSQL(
+                            "create table " + s + " " +
+                                    "(id integer primary key, city text,temp text,pressure text, humidity text," +
+                                    "clouds text,wind text)"
+                    );
+                }
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + weatherTableName);
+            //db.execSQL("DROP TABLE IF EXISTS " + weatherTableName);
 
-            onCreate(db);
+            //onCreate(db);
         }
 
-        public void deleteTable(String tableName) {
-            SQLiteDatabase db = this.getReadableDatabase();
-            db.execSQL("DROP TABLE IF EXISTS " + tableName);
-        }
-
-        public void insertWeatherData(String city, String temp, String pressure,
+        public void insertWeatherData(String tableName, String city, String temp, String pressure,
                                      String humidity, String clouds, String wind) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
@@ -66,13 +60,13 @@ public class DBHelper {
             contentValues.put("humidity", humidity);
             contentValues.put("clouds", clouds);
             contentValues.put("wind", wind);
-            db.insert(weatherTableName, null, contentValues);
+            db.insert(tableName, null, contentValues);
             //return true;
         }
 
-        public String getTemp(String cityName) {
+        public String getTemp(String tableName, String cityName) {
             SQLiteDatabase db = this.getReadableDatabase();
-            String selectQuery = "SELECT temp FROM " + weatherTableName + " WHERE city='" + cityName + "'";
+            String selectQuery = "SELECT temp FROM " + tableName + " WHERE city='" + cityName + "'";
             Log.i("SQL", selectQuery);
             Cursor c = db.rawQuery(selectQuery, null);
             String temp = "No";
@@ -83,11 +77,11 @@ public class DBHelper {
             return temp;
         }
 
-        public HashMap<String, String> getAllData(String cityName) {
+        public HashMap<String, String> getAllData(String tableName, String cityName) {
             HashMap<String, String> dataMap = new HashMap<String, String>();
 
             SQLiteDatabase db = this.getReadableDatabase();
-            String selectQuery = "SELECT * FROM " + weatherTableName + " WHERE city='" + cityName + "'";
+            String selectQuery = "SELECT * FROM " + tableName + " WHERE city='" + cityName + "'";
             Cursor res = db.rawQuery(selectQuery, null);
             res.moveToFirst();
 

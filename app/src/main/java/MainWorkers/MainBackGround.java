@@ -3,6 +3,7 @@ package MainWorkers;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -32,9 +33,15 @@ public class MainBackGround extends AsyncTask<Void, Integer, Void> {
 
     //start main work
     @Override
-    protected Void doInBackground(Void... params) {
-        SqLiteWork.createUpdateBase(context);
-        SqLiteWork.updateData();
+    protected Void doInBackground(Void... params)  {
+        try {
+            SqLiteWork.createUpdateBase(context);
+            SqLiteWork.updateData();
+        }
+        catch (Exception e)
+        {
+            Log.i("Error Async", e.toString());
+        }
 
         return null;
     }

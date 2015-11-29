@@ -68,7 +68,7 @@ public class GetWeatherData {
                 wth.clouds = jsonObj.get("clouds").getAsJsonObject().get("all").toString();
                 wth.wind = jsonObj.get("wind").getAsJsonObject().get("speed").toString();
 
-                hm.put(timeStr, wth);
+                hm.put("date_" + timeStr.replace("-", "_"), wth);
             }
         }
 

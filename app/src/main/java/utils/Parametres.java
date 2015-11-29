@@ -7,4 +7,7 @@ public class Parametres {
     public static boolean isInternet = false;
 
     public static int howMuchDaysNeed = 5;
+
+    public static String cityName = "";
+    public static String todayDate = "";
 }

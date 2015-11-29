@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DBHelper {
 
@@ -21,33 +22,31 @@ public class DBHelper {
 
         public String weatherTableName = tableName;
 
-        public static final String WEATHER_COLUMN_ID = "id";
-        public static final String WEATHER_CTIY_NAME = "city";
-        public static final String WEATHER_COLUMN_TEMP = "temp";
-        public static final String WEATHER_COLUMN_PRESSURE = "pressure";
-        public static final String WEATHER_COLUMN_HUMIDITY = "humidity";
-        public static final String WEATHER_COLUMN_CLOUDS = "clouds";
-        public static final String WEATHER_COLUMN_WIND = "wind";
-        private HashMap hp;
-
         public SingleDB(Context context) {
-            super(context, DATABASE_NAME, null, 1);
+            super(context, DATABASE_NAME, null, 2);
+            context.deleteDatabase(DATABASE_NAME);
+            //super(context, DATABASE_NAME, null, 2);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             // TODO Auto-generated method stub
-            if (needCreate) {
+            //if (needCreate) {
+
                 db.execSQL(
                         "create table " + weatherTableName + " " +
                                 "(id integer primary key, city text,temp text,pressure text, humidity text," +
                                 "clouds text,wind text)"
                 );
-            }
+            //Log.i("Table", weatherTableName);
+            //}
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + weatherTableName);
+
+            onCreate(db);
         }
 
         public void deleteTable(String tableName) {
@@ -55,9 +54,9 @@ public class DBHelper {
             db.execSQL("DROP TABLE IF EXISTS " + tableName);
         }
 
-        public boolean insertContact(String city, String temp, String pressure,
+        public void insertWeatherData(String city, String temp, String pressure,
                                      String humidity, String clouds, String wind) {
-            SQLiteDatabase db = this.getWritableDatabase();
+            SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put("city", city);
             contentValues.put("temp", temp);
@@ -66,12 +65,12 @@ public class DBHelper {
             contentValues.put("clouds", clouds);
             contentValues.put("wind", wind);
             db.insert(weatherTableName, null, contentValues);
-            return true;
+            //return true;
         }
 
         public String getTemp(String cityName) {
             SQLiteDatabase db = this.getReadableDatabase();
-            String selectQuery = "SELECT temp FROM " + weatherTableName + " WHERE city=" + cityName;
+            String selectQuery = "SELECT temp FROM " + weatherTableName + " WHERE city='" + cityName + "'";
             Cursor c = db.rawQuery(selectQuery, null);
             String temp = "No";
             if (c.moveToFirst()) {
@@ -85,7 +84,7 @@ public class DBHelper {
             HashMap<String, String> dataMap = new HashMap<String, String>();
 
             SQLiteDatabase db = this.getReadableDatabase();
-            String selectQuery = "SELECT * FROM " + weatherTableName + " WHERE city=" + cityName;
+            String selectQuery = "SELECT * FROM " + weatherTableName + " WHERE city='" + cityName + "'";
             Cursor res = db.rawQuery(selectQuery, null);
             res.moveToFirst();
 

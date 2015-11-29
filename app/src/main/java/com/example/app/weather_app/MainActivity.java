@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
+import utils.DateWork;
 import utils.Parametres;
 import MainWorkers.MainBackGround;
 
@@ -63,14 +64,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Parametres.isInternet = isOnline();
-                String checkedCity = adapter.getItem(position);
 
-                new MainBackGround(MainActivity.this, progressBar).execute();
+                String checkedCity = adapter.getItem(position);
+                Parametres.cityName = checkedCity;
+                Parametres.todayDate = DateWork.todayDate();
 
                 Log.i("Checked city", checkedCity);
 
-                //Intent intent = new Intent(MainActivity.this, WeatherMain.class);
-                //startActivity(intent);
+                if (Parametres.isInternet) {
+                    new MainBackGround(MainActivity.this, progressBar).execute();
+                    Log.i("Internet", "yes");
+                }
+                else
+                {
+                    Intent intent = new Intent(MainActivity.this, WeatherMain.class);
+                    startActivity(intent);
+                    Log.i("Internet", "no");
+                }
             }
         });
     }

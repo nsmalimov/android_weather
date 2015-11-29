@@ -45,6 +45,22 @@ public class SqLiteWork {
     }
 
     public static String getTemperature(String date, String cityName) {
-        return db.getTemp("date_" + date, cityName);
+        try {
+            return db.getTemp("date_" + date, cityName);
+        }
+        catch (Exception e)
+        {
+            return "no data";
+        }
+    }
+
+    public static HashMap<String, String> getAllData(String date, String cityName) {
+        try {
+            return db.getAllData("date_" + date, cityName);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 }

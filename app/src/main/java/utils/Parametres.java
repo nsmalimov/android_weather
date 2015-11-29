@@ -12,4 +12,6 @@ public class Parametres {
 
     public static String cityName = "";
     public static String todayDate = "";
+
+    public static String needDate = "";
 }

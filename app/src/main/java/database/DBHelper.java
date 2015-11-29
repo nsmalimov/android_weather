@@ -3,6 +3,7 @@ package database;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,8 +17,7 @@ public class DBHelper {
     public ArrayList<String> tableNameArray;
     public boolean needCreate = false;
 
-    public DBHelper(ArrayList<String> tableNameArray)
-    {
+    public DBHelper(ArrayList<String> tableNameArray) {
         this.tableNameArray = tableNameArray;
     }
 
@@ -32,26 +32,22 @@ public class DBHelper {
         @Override
         public void onCreate(SQLiteDatabase db) {
             // TODO Auto-generated method stub
-            //if (needCreate) {
-
-                for (String s: tableNameArray) {
-                    db.execSQL(
-                            "create table " + s + " " +
-                                    "(id integer primary key, city text,temp text,pressure text, humidity text," +
-                                    "clouds text,wind text)"
-                    );
-                }
+            for (String s : tableNameArray) {
+                db.execSQL(
+                        "create table " + s + " " +
+                                "(id integer primary key, city text,temp text,pressure text, humidity text," +
+                                "clouds text,wind text)"
+                );
+                Log.i("Table", s);
+            }
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            //db.execSQL("DROP TABLE IF EXISTS " + weatherTableName);
-
-            //onCreate(db);
         }
 
         public void insertWeatherData(String tableName, String city, String temp, String pressure,
-                                     String humidity, String clouds, String wind) {
+                                      String humidity, String clouds, String wind) {
             SQLiteDatabase db = getWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put("city", city);
@@ -61,20 +57,18 @@ public class DBHelper {
             contentValues.put("clouds", clouds);
             contentValues.put("wind", wind);
             db.insert(tableName, null, contentValues);
-            //return true;
         }
 
         public String getTemp(String tableName, String cityName) {
             SQLiteDatabase db = this.getReadableDatabase();
             String selectQuery = "SELECT temp FROM " + tableName + " WHERE city='" + cityName + "'";
-            Log.i("SQL", selectQuery);
             Cursor c = db.rawQuery(selectQuery, null);
-            String temp = "No";
+            String temperature = "No";
             if (c.moveToFirst()) {
-                temp = c.getString(c.getColumnIndex("temp"));
+                temperature = c.getString(c.getColumnIndex("temp"));
             }
             c.close();
-            return temp;
+            return temperature;
         }
 
         public HashMap<String, String> getAllData(String tableName, String cityName) {
@@ -92,7 +86,6 @@ public class DBHelper {
                 dataMap.put("humidity", res.getString(res.getColumnIndex("humidity")));
                 dataMap.put("clouds", res.getString(res.getColumnIndex("clouds")));
                 dataMap.put("wind", res.getString(res.getColumnIndex("wind")));
-                ;
                 res.moveToNext();
             }
             return dataMap;

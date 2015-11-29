@@ -54,16 +54,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
 
-            <CalendarView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/calendarView"
-                android:visibility="invisible"
-                android:layout_below="@+id/textCityName"
-                android:layout_toRightOf="@+id/textCityName"
-                android:layout_toEndOf="@+id/textCityName"
-                android:layout_marginTop="175dp" />
-
         </RelativeLayout>
     </LinearLayout>
 

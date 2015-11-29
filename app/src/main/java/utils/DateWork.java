@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 public class DateWork {
     public static String todayDate()
@@ -18,9 +16,17 @@ public class DateWork {
         int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        String answer = Integer.toString(year) + "_" +
-                        Integer.toString(month) + "_" +
-                        Integer.toString(day);
+        String yearStr = Integer.toString(year);
+        String monthStr = Integer.toString(month);
+        String dayStr = Integer.toString(day);
+
+        if (month < 10)
+            monthStr = "0" + monthStr;
+        if (day < 10)
+            dayStr = "0" + dayStr;
+
+        String answer = yearStr + "_" + monthStr + "_" + dayStr;
+
         return answer;
     }
 

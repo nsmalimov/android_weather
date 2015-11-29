@@ -63,7 +63,10 @@ public class GetWeatherData {
                 JsonElement jsonObjNew = jsonObj.get("main");
                 wth.temp = jsonObjNew.getAsJsonObject().get("temp").toString();
                 wth.temp = Integer.toString((int)((Double.parseDouble(wth.temp) - 274.15)));
+
                 wth.pressure = jsonObjNew.getAsJsonObject().get("pressure").toString();
+                wth.pressure = Integer.toString((int)((Double.parseDouble(wth.pressure) * (0.7500637554192))));
+
                 wth.humidity = jsonObjNew.getAsJsonObject().get("humidity").toString();
                 wth.clouds = jsonObj.get("clouds").getAsJsonObject().get("all").toString();
                 wth.wind = jsonObj.get("wind").getAsJsonObject().get("speed").toString();

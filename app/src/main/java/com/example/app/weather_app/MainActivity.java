@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -80,6 +81,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Intent intent = new Intent(MainActivity.this, WeatherMain.class);
                     startActivity(intent);
                     Log.i("Internet", "no");
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "offline mode", Toast.LENGTH_LONG);
+                    toast.show();
                 }
             }
         });

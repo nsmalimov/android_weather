@@ -8,6 +8,8 @@ public class Parametres {
 
     public static int howMuchDaysNeed = 5;
 
+    public static boolean needUpdate = true;
+
     public static String cityName = "";
     public static String todayDate = "";
 }

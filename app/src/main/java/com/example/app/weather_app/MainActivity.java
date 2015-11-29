@@ -98,6 +98,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         adapter.notifyDataSetChanged();
 
         saveCitiesApp(Parametres.cities);
+        Parametres.needUpdate = true;
 
         mEdit.setText("");
     }

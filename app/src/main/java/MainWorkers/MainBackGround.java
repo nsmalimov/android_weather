@@ -11,6 +11,7 @@ import com.example.app.weather_app.R;
 import com.example.app.weather_app.WeatherMain;
 
 import database.SqLiteWork;
+import utils.Parametres;
 
 public class MainBackGround extends AsyncTask<Void, Integer, Void> {
 
@@ -35,8 +36,13 @@ public class MainBackGround extends AsyncTask<Void, Integer, Void> {
     @Override
     protected Void doInBackground(Void... params)  {
         try {
-            SqLiteWork.createUpdateBase(context);
-            SqLiteWork.updateData();
+            Log.v("Start", Boolean.toString(Parametres.needUpdate));
+            if (Parametres.needUpdate) {
+                SqLiteWork.createUpdateBase(context);
+                //SqLiteWork.updateData();
+                Parametres.needUpdate = false;
+
+            }
         }
         catch (Exception e)
         {
@@ -62,8 +68,5 @@ public class MainBackGround extends AsyncTask<Void, Integer, Void> {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         progressBar.setVisibility(View.INVISIBLE);
         context.startActivity(intent);
-
-
-
     }
 }

@@ -42,7 +42,7 @@ public class DateWork {
 
         for (DateTime d: ret)
         {
-            datesArray.add(d.toString().split("T")[0].replace("-", "_"));
+            datesArray.add("date_" + d.toString().split("T")[0].replace("-", "_"));
 
         }
 

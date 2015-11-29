@@ -24,7 +24,9 @@ public class DBHelper {
 
         public SingleDB(Context context) {
             super(context, DATABASE_NAME, null, 2);
-            context.deleteDatabase(DATABASE_NAME);
+
+
+
             //super(context, DATABASE_NAME, null, 2);
         }
 
@@ -71,6 +73,7 @@ public class DBHelper {
         public String getTemp(String cityName) {
             SQLiteDatabase db = this.getReadableDatabase();
             String selectQuery = "SELECT temp FROM " + weatherTableName + " WHERE city='" + cityName + "'";
+            Log.i("SQL", selectQuery);
             Cursor c = db.rawQuery(selectQuery, null);
             String temp = "No";
             if (c.moveToFirst()) {

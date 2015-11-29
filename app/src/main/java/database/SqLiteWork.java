@@ -15,23 +15,24 @@ import utils.Weather;
 public class SqLiteWork {
     public static HashMap<String, DBHelper.SingleDB> tablesInst = new HashMap<String, DBHelper.SingleDB>();
     public static Context context;
-    public static void createUpdateBase(Context contextGet)
+    public static void createUpdateBase(Context contextGet) throws Exception
     {
         context = contextGet;
-        ArrayList<String> needTime = DateWork.getDateRange();
+        context.deleteDatabase("WeatherDB.db");
+        //ArrayList<String> needTime = DateWork.getDateRange();
 
-        DBHelper d = new DBHelper();
-        d.tableName = "workerTable";
-        d.needCreate = false;
+        //DBHelper d = new DBHelper();
+        //d.tableName = "workerTable";
+        //d.needCreate = false;
 
-        DBHelper.SingleDB singleD = d.new SingleDB(context);
+        //DBHelper.SingleDB singleD = d.new SingleDB(context);
 
-        ArrayList<String> allTables = singleD.getAllTables();
-        deleteOldTables(singleD, needTime.get(0), allTables);
+        //ArrayList<String> allTables = singleD.getAllTables();
+        //deleteOldTables(singleD, needTime.get(0), allTables);
 
         ArrayList<String> needDates = DateWork.getDateRange();
 
-        createNeedTables(d, allTables, needDates);
+        createNeedTables(needDates);
     }
 
     public static void updateData() throws Exception
@@ -51,7 +52,7 @@ public class SqLiteWork {
             {
                 Weather wth = entry.getValue(); //weather
 
-                Log.i("Instanc", tablesInst.get(entry.getKey()).toString());
+                //Log.i("Instanc", tablesInst.get(entry.getKey()).toString());
                 //Log.i("Instanc1", tablesInst.entrySet().toString());
 
                 tablesInst.get(entry.getKey()).insertWeatherData(s, wth.temp, wth.pressure,
@@ -77,31 +78,45 @@ public class SqLiteWork {
         }
     }
 
-    public static void createNeedTables(DBHelper d, ArrayList<String> allTables, ArrayList<String> needDates)
+    public static void createNeedTables(ArrayList<String> needDates) throws Exception
     {
+        ArrayList<String> cities = Parametres.cities;
+
         for (String s: needDates)
         {
-            //if (!allTables.contains(s))
-            //{
-                //DBHelper db = new DBHelper();
-                //db.tableName = "date_" + s;
-                //db.needCreate = true;
+                DBHelper db = new DBHelper();
+                db.tableName = s;
 
-                DBHelper users = new DBHelper();
-                users.tableName = "date_" + s;
-                //DBHelper.SingleDB query = users.new SingleDB(context);
-                //query.getReadableDatabase();
+                //Users users = new Users();
+            DBHelper.SingleDB query = db.new SingleDB(context);
+            query.getReadableDatabase();
 
-                //db.SingleDB dbSng = new db.new DBHelper.SingleDB(context);
+            for (String s1: cities) {
+                //Log.i("Data", s1);
 
-                tablesInst.put(users.tableName, users.new SingleDB(context));
-            //}
-            //else
-            //{
-            //    d.tableName = s;
-            //    d.needCreate = false;
-            //    tablesInst.put(s, d.new SingleDB(context));
-            //}
+                HashMap<String, Weather> mapCities = GetWeatherData.getAllDataNextDays(s1);
+
+                //date weather by city
+
+                //iterate by dates
+                for (HashMap.Entry<String, Weather> entry : mapCities.entrySet()) {
+                    Weather wth = entry.getValue(); //weather
+
+                    //Log.i("Instanc", tablesInst.get(entry.getKey()).toString());
+                    //Log.i("Instanc1", tablesInst.entrySet().toString());
+
+                    //query.insertWeatherData(s, wth.temp, wth.pressure,
+                    //        wth.humidity, wth.clouds, wth.wind);
+
+                    tablesInst.put(db.tableName, db.new SingleDB(context));
+                    tablesInst.get(db.tableName).getWritableDatabase();
+                    tablesInst.get(db.tableName).insertWeatherData(s1, wth.temp, wth.pressure,
+                                    wth.humidity, wth.clouds, wth.wind);
+
+                }
+            }
+            return;
+
         }
     }
 

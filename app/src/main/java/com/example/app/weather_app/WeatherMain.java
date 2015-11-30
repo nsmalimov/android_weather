@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import database.SqLiteWork;
+import utils.DateWork;
 import utils.Parametres;
 
 public class WeatherMain extends Activity implements View.OnClickListener{
@@ -58,9 +59,12 @@ public class WeatherMain extends Activity implements View.OnClickListener{
 
         myTextViewCity.setText(Parametres.cityName);
 
-        String temp = SqLiteWork.getTemperature(Parametres.todayDate, Parametres.cityName) + "°C";
+        String temp = SqLiteWork.getTemperature(Parametres.todayDate, Parametres.cityName);
+
         if (temp.equals("no data"))
             temp = "no data";
+        else
+            temp =  temp + "°C";
 
         myTextViewTemp.setText(temp);
 
@@ -77,6 +81,7 @@ public class WeatherMain extends Activity implements View.OnClickListener{
             case R.id.moreInfBut:
                 Intent intent = new Intent(this, MoreInfActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Parametres.needDate = DateWork.todayDate();
                 this.startActivity(intent);
                 break;
             case R.id.predictBut:

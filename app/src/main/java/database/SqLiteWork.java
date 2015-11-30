@@ -13,7 +13,6 @@ import utils.Weather;
 
 
 public class SqLiteWork {
-    //public static HashMap<String, DBHelper.SingleDB> tablesInst = new HashMap<String, DBHelper.SingleDB>();
     public static Context context;
     public static DBHelper.SingleDB db;
 
@@ -29,17 +28,25 @@ public class SqLiteWork {
 
         db = new DBHelper(needDates).new SingleDB(context);
 
-        for (String date : needDates) {
-            for (String cityName : cities) {
-                HashMap<String, Weather> mapCities = GetWeatherData.getAllDataNextDays(cityName);
+        HashMap<String, Weather> mapCities = null;
 
-                //date weather by city
-                //iterate by dates
-                for (HashMap.Entry<String, Weather> entry : mapCities.entrySet()) {
-                    Weather wth = entry.getValue(); //weather
-                    db.insertWeatherData(date, cityName, wth.temp, wth.pressure,
-                            wth.humidity, wth.clouds, wth.wind);
-                }
+        Log.i("City", cities.toString());
+        Log.i("Dates", needDates.toString());
+
+        for (String cityName : cities) {
+
+            Log.i("DDD", needDates.toString());
+            try {
+                mapCities = GetWeatherData.getAllDataNextDays(cityName);
+            } catch (Exception e) {
+                Log.i("SSS", e.toString());
+            }
+
+
+            for (HashMap.Entry<String, Weather> entry : mapCities.entrySet()) {
+                Weather wth = entry.getValue(); //weather
+                db.insertWeatherData(entry.getKey(), cityName, wth.temp, wth.pressure,
+                        wth.humidity, wth.clouds, wth.wind);
             }
         }
     }
@@ -47,9 +54,7 @@ public class SqLiteWork {
     public static String getTemperature(String date, String cityName) {
         try {
             return db.getTemp("date_" + date, cityName);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return "no data";
         }
     }
@@ -57,9 +62,7 @@ public class SqLiteWork {
     public static HashMap<String, String> getAllData(String date, String cityName) {
         try {
             return db.getAllData("date_" + date, cityName);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return null;
         }
     }

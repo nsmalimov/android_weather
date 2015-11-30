@@ -37,12 +37,7 @@ public class MainBackGround extends AsyncTask<Void, Integer, Void> {
     protected Void doInBackground(Void... params)  {
         try {
             Log.v("Start", Boolean.toString(Parametres.needUpdate));
-            if (Parametres.needUpdate) {
                 SqLiteWork.createUpdateBase(context);
-                //SqLiteWork.updateData();
-                Parametres.needUpdate = false;
-
-            }
         }
         catch (Exception e)
         {

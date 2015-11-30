@@ -14,4 +14,6 @@ public class Parametres {
     public static String todayDate = "";
 
     public static String needDate = "";
+
+    public static String moreInfNeedDate = "";
 }

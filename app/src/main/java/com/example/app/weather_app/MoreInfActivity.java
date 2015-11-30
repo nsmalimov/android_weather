@@ -2,7 +2,9 @@ package com.example.app.weather_app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -19,6 +21,7 @@ public class MoreInfActivity extends AppCompatActivity {
     TextView myTextViewWind;
 
     TextView myTextViewDate;
+    TextView myTextViewCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +36,19 @@ public class MoreInfActivity extends AppCompatActivity {
 
         myTextViewDate = (TextView) findViewById(R.id.textViewDate);
 
+        myTextViewCity = (TextView) findViewById(R.id.textViewCity);
+
+        myTextViewCity.setText(Parametres.cityName);
+
         HashMap<String, String> hm = SqLiteWork.getAllData(Parametres.needDate, Parametres.cityName);
+
+        Log.i("Need", Parametres.needDate);
 
         if (hm == null)
         {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "No data", Toast.LENGTH_LONG);
+            toast.show();
             return;
         }
 

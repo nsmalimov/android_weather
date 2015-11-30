@@ -15,7 +15,6 @@ import android.util.Log;
 public class DBHelper {
 
     public ArrayList<String> tableNameArray;
-    public boolean needCreate = false;
 
     public DBHelper(ArrayList<String> tableNameArray) {
         this.tableNameArray = tableNameArray;
@@ -23,10 +22,10 @@ public class DBHelper {
 
     public class SingleDB extends SQLiteOpenHelper {
 
-        public static final String DATABASE_NAME = "WeatherDB.db";
+        public static final String DATABASE_NAME = "WeatherDB2.db";
 
         public SingleDB(Context context) {
-            super(context, DATABASE_NAME, null, 1);
+            super(context, DATABASE_NAME, null, 2);
         }
 
         @Override
@@ -44,6 +43,7 @@ public class DBHelper {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            onCreate(db);
         }
 
         public void insertWeatherData(String tableName, String city, String temp, String pressure,
@@ -56,6 +56,9 @@ public class DBHelper {
             contentValues.put("humidity", humidity);
             contentValues.put("clouds", clouds);
             contentValues.put("wind", wind);
+
+            Log.i("DATA", tableName + " " + city + " " + temp + " " + wind);
+
             db.insert(tableName, null, contentValues);
         }
 
@@ -89,26 +92,6 @@ public class DBHelper {
                 res.moveToNext();
             }
             return dataMap;
-        }
-
-        public ArrayList<String> getAllTables() {
-            ArrayList<String> arrTblNames = new ArrayList<String>();
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-
-            if (c.moveToFirst()) {
-                while (!c.isAfterLast()) {
-                    String tableName = c.getString(c.getColumnIndex("name"));
-                    String[] tableNameSplit = tableName.split("-");
-
-                    if (tableNameSplit.length == 3) {
-                        arrTblNames.add(tableName);
-                    }
-                    c.moveToNext();
-                }
-            }
-
-            return arrTblNames;
         }
     }
 }

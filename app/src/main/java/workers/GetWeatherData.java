@@ -1,16 +1,9 @@
-package MainWorkers;
+package workers;
 
-import android.provider.SyncStateContract;
 import android.util.Log;
-
-import com.google.gson.Gson;
-
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 import utils.Constants;
@@ -19,7 +12,6 @@ import utils.Weather;
 import com.google.gson.*;
 
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 
 public class GetWeatherData {

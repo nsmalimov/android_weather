@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import MainWorkers.GetWeatherData;
+import workers.GetWeatherData;
 import utils.DateWork;
 import utils.Parametres;
 import utils.Weather;

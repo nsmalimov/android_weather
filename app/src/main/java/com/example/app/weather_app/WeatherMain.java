@@ -148,7 +148,6 @@ public class WeatherMain extends Activity implements View.OnClickListener{
         Parametres.needDate = answer;
     }
 
-
     public void onDatePickerClick(View v) {
         dateDialog.show();
     }

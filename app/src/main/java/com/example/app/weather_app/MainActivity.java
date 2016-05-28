@@ -166,5 +166,4 @@ public class MainActivity extends Activity implements View.OnClickListener {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-
 }

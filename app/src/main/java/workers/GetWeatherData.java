@@ -53,7 +53,6 @@ public class GetWeatherData {
 
         JsonArray ob = jsonObject.get("list").getAsJsonArray();
 
-
         for (JsonElement ob1 : ob) {
             Weather wth = new Weather();
 
@@ -78,9 +77,6 @@ public class GetWeatherData {
                 hm.put("date_" + timeStr.replace("-", "_"), wth);
             }
         }
-
         return hm;
     }
-
 }
-
